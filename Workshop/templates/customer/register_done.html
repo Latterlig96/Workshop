@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/register_done.css' %}">
+&nbsp;
+<div class="card col-4 offset-4 bg-light">
+  <div class="card-body">
+    <h5 class="text-center">Welcome, {{ customer.first_name }}</h5>
+    <p class="text-center">You have been successfuly registered to page.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary bg-dark offset-4">Go to Home</a>
+  </div>
+</div>
+</body>
+{% endblock %}

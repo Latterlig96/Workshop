@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tags %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/forum.css' %}">
+
+<form method="GET" action="{% url 'create_forum' %}">
+    <button class="btn btn-primary" type="submit">Create New Forum</button>
+</form>
+
+<div class="container">
+    <div class="main-body p-0">
+        <div class="inner-wrapper">  
+            <div class="inner-main">    
+                <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+                    <div class="card mb-2">
+                        <div class="card-body p-2 p-sm-3">
+                            {% for forum in forums %}
+                            <div class="media forum-item">
+                                <div class="media-body">
+                                    <h6><a href="{% url 'thread_list' forum.id %}" class="text-body">{{ forum.title }}</a></h6>
+                                    <p class="text-secondary">
+                                        {{ forum.description }}
+                                    </p>
+                                    <p class="text-muted"><span class="text-secondary font-weight-bold">{{ forum.created_at }}</span></p>
+                                </div>
+                                <div class="text-muted small text-center align-self-center">
+                                    <span class="d-none d-sm-inline-block"><i class="far fa-eye"></i>{{ forum.threads }}</span>
+                                    <span><i class="far fa-comment ml-2"></i>{{ forum.posts }}</span>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                            {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

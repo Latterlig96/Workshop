@@ -1,0 +1,14 @@
+body {
+    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+}
+
+.sidebar {
+    float: left;
+    width: 30%;
+    height: 100vh;
+}
+
+.carousel-wrapper {
+    float: left;
+    width: 70%;
+}

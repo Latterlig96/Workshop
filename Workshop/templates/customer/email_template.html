@@ -1,0 +1,12 @@
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/email.css' %}">
+<div class="card">
+    <h5 class="card-header">Registration success</h5>
+    <div class="card-body">
+    <h5 class="card-title">Welcome,{{name}}</h5>
+    <p class="card-text">Thank you for registering to our Workshop app, we hope you will find it very helpful and find good products.</p>
+    <a href="{% url 'customer_login' %}" class="btn btn-primary">Go to dashboard</a>
+    </div>
+</div>
+{% endblock %}

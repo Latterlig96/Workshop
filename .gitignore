@@ -1,0 +1,7 @@
+ZSZI/
+__pycache__/
+db*
+secret*
+migrations/
+.vscode
+media

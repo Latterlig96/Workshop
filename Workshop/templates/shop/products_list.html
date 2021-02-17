@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/products_list.css' %}">
+&nbsp; 
+<div class="row">
+    {% for product in products %}
+    <div class="col-lg-4 mt-2">
+        <div class="card product-card">
+            <img class="card-img" src="{{ product.logo.url }}" alt="Card image cap" style="width: 286px; height: 180px;">
+            <div class="card-body">
+                <h5 class="card-title text-center"><strong>{{ product.name }}</strong></h5>
+                <p class="card-text text-center">{{ product.description }}</p>
+                <a href="{% url 'product_detail' product.name %}" class="btn btn-primary col-lg-5 col-sm-3">Detail</a>
+                <a href="{% url 'product_order' product.name %}" class="btn btn-primary col-lg-5 col-sm-3">Buy Now</a>
+                <p class="price">${{ product.price }}</p>
+                <form action="{% url 'cart_add' product.id %}" method="POST">
+                    {{ cart_product_form }}
+                    {% csrf_token %}
+                    <input type="submit" value="Add to cart">
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

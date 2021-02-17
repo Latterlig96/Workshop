@@ -1,0 +1,38 @@
+body {
+    background-image: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+}
+
+#id_name {
+    display: block;
+    width: 100%;
+}
+
+#id_surname {
+    display: block; 
+    width: 100%;
+}
+
+#id_address {
+    display: block;
+    width: 100%;
+}
+
+#id_email {
+    display: block;
+    width: 100%;
+}
+
+#id_city {
+    display: block;
+    width: 100%;
+}
+
+#id_zipcode {
+    display: block; 
+    width: 100%;
+}
+
+.card-horizontal {
+    display: flex;
+    flex: 1 1 auto;
+}

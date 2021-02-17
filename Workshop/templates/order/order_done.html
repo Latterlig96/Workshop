@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+<div class="card offset-lg-3 offset-md-3 col-lg-5 mt-3">
+  <img class="card-img-top" src="{% static 'img/success.png' %}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title text-center"><strong>Success</strong></h5>
+    <p class="card-text">Your order has been completed, wait for response from our employee about further clarifications.</p>
+    <a href="{% url 'home' %}" class="btn btn-info">Go to dashboard</a>
+  </div>
+</div>
+{% endblock %}

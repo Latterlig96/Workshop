@@ -1,0 +1,13 @@
+body { 
+    background-image: linear-gradient(90deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.card {
+    align-items: center; 
+    padding: 40px;
+}
+
+.card h5 {
+    font-size: 30px;
+    text-align: center;
+}

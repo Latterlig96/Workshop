@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="width: 70%; margin-top: 150px;">
+    <div class="card">
+        <div class="row">
+            <div class="col">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>From: {{ task.task_from }} To: {{task.task_to}}</strong></h5>
+                    <h4 class="card-title"><strong>Deadline: {{ task.execution_time }}</strong></h4>
+                    <h3 class="card-title"><strong>Status: {{ task.status }}</strong></h3>
+                    <p class="card-text">{{ task.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

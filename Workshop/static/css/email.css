@@ -1,0 +1,15 @@
+.card {
+    text-align: center;
+    margin: 200px auto;
+    width: 30%;
+}
+
+.card-header {
+    font-weight: normal; 
+    font-size: 50px;
+}
+
+.card-title {
+    font-weight: 500;
+    font-size: 30px;
+}

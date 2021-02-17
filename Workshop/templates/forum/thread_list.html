@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/forum.css' %}">
+
+<form method="GET" action="{% url 'create_thread' %}">
+    <button class="btn btn-primary" type="submit">Create New Thread</button>
+</form>
+
+<div class="container">
+    <div class="main-body p-0">
+        <div class="inner-wrapper">  
+            <div class="inner-main">    
+                <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+                    <div class="card mb-2">
+                        <div class="card-body p-2 p-sm-3">
+                            {% for thread in threads %}
+                            <div class="media forum-item">
+                                <div class="media-body">
+                                    <h6><a href="{% url 'thread_detail' thread.id %}" class="text-body">{{ thread.title }}</a></h6>
+                                    <p class="text-muted"><span class="text-secondary font-weight-bold">{{ thread.created_at }}</span></p>
+                                </div>
+                                <div class="text-muted small text-center align-self-center">
+                                    <span class="d-none d-sm-inline-block"><i class="far fa-eye"></i>{{ thread.posts }}</span>
+                                    <span><i class="far fa-comment ml-2"></i>{{ thread.views }}</span>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

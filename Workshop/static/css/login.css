@@ -1,0 +1,30 @@
+body {
+    background-image: linear-gradient(270deg, #161326 0%, #1de2e9 100%);
+}
+
+.container {
+    margin: auto;
+}
+
+.card-body {
+    padding: 35px;
+}
+
+#id_email {
+    display: block;
+    width: 100%;
+}
+
+#id_password {
+    display: block;
+    width: 100%;
+}
+
+#id_shop {
+    display: block;
+    width: 100%;
+}
+
+.card-footer {
+    padding: 1px;
+}

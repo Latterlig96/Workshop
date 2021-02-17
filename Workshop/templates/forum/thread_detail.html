@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/forum.css' %}">
+
+<form method="GET" action="{% url 'create_post' %}">
+    <button class="btn btn-primary" type="submit">Create New Post</button>
+</form>
+
+<div class="container">
+    <div class="main-body p-0">
+        <div class="inner-wrapper">  
+            <div class="inner-main">    
+                <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+                    <div class="card mb-2">
+                        <div class="card-body p-2 p-sm-3">
+                            {% for post in posts %}
+                            <div class="media forum-item">
+                                <div class="media-body">
+                                    <h6><a href="{% url 'post_detail' post.id %}" class="text-body">{{ post.author }}</a></h6>
+                                    <p class="text-secondary">
+                                        {{ post.body }}
+                                    </p>
+                                    <p class="text-muted"><span class="text-secondary font-weight-bold">{{ post.created_at }}</span></p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

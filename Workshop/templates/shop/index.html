@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+<div class="container"> 
+    <h1 class="text-center"><strong>Workshop</strong></h1>
+    <p class="sliders"><strong>Passion Creativity Experience</strong></p>
+<hr class="divider">
+    <div class="row">
+      <div class="col-md-7">
+        <h2 class="heading">First featurette heading. <span class="text-muted">It’ll blow your mind.</span></h2>
+        <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+      </div>
+      <div class="col-md-5">
+        <img src="{% static 'img/hand.png' %}" width=500 height=500>
+      </div>
+    </div>
+<hr class="divider">
+    <div class="row">
+      <div class="col-md-7 order-md-2">
+        <h2 class="heading">Oh yeah, it’s that good. <span class="text-muted">See for yourself.</span></h2>
+        <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+      </div>
+      <div class="col-md-5 order-md-1">
+        <img src="{% static 'img/gear.png' %}" width=450 height=500>
+      </div>
+    </div>
+<hr class="divider">
+    <div class="row">
+      <div class="col-md-7">
+        <h2 class="heading">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
+        <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+      </div>
+      <div class="col-md-5">
+        <img src="{% static 'img/gear2.png' %}" width=500 height=500>
+      </div>
+    </div>
+    </div>
+</div>
+<footer class="bg-light text-center text-lg-start">
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+    © 2020 Copyright: Patryk Zając, Natalia Frankowska
+  </div>
+</footer>
+{% endblock %}

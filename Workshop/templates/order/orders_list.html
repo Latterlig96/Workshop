@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+<div class="row">
+    {% for item in items %}
+    <div class="col-lg-3 col-md-2 mt-2">
+        <div class="card">
+                <div class="img-square-wrapper text-center">
+                    <img class="" src="{{ item.product.logo.url }}"" alt="Card image cap">
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title text-center"><strong>{{ item.product.name }}</strong></h4>
+                    <hr>
+                    <div id="accordion">
+                        <div class="card">
+                          <div class="card-header" id="headingOne">
+                            <h5 class="text-center">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Customer Details
+                              </button>
+                            </h5>
+                          </div>
+                      
+                          <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                            <div class="card-body">
+                                <p class="text-center"><strong>Name</strong>: {{ item.order_information.name }}</p>
+                                <p class="text-center"><strong>Surname</strong>: {{ item.order_information.surname }}</p>
+                                <p class="text-center"><strong>Email</strong>: {{ item.order_information.email }}</p>
+                                <p class="text-center"><strong>Address:</strong>: {{ item.order_information.address }}</p>
+                                <p class="text-center"><strong>City</strong>: {{ item.order_information.city }}</p>
+                                <p class="text-center"><strong>Created</strong>: {{ item.order_information.created_at }}</p>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <a href="#"><button type="button" class="btn btn-info">Details</button></a>
+                    <a href="{% url 'payment_link_send' item.order_information.id %}"><button type="button" class="btn btn-info">Resolve</button></a>
+                    <a href="#"><button type="button" class="btn btn-info">Check Magazine</button></a>
+                </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

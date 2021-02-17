@@ -1,0 +1,96 @@
+body {
+    background-image: linear-gradient(90deg, #fea6f7 0%, #f68084 100%);
+}
+
+.container {
+    margin:auto;
+}
+
+#id_first_name {
+    display: block; 
+    width: 100%;
+}
+
+#id_last_name {
+    display: block;
+    width: 100%;
+}
+
+#id_address {
+    display: block; 
+    width: 100%;
+}
+
+#id_email {
+    display: block;
+    width: 100%;
+}
+
+#id_password {
+    display: block; 
+    width: 100%;
+}
+
+#id_confirm_password {
+    display: block; 
+    width: 100%;
+}
+
+#id_shop {
+    display: block;
+    width: 100%;
+}
+
+#id_logo {
+    display: block;
+    width: 100%;
+}
+
+#id_category_logo {
+    display: block;
+    width: 100%;
+}
+
+#id_name {
+    display: block;
+    width: 100%;
+}
+
+#id_price {
+    display: block;
+    width: 100%;
+}
+
+#id_category {
+    display: block;
+    width: 100%;
+}
+
+#id_description {
+    display: block;
+    width: 100%;
+}
+
+#id_product {
+    display: block;
+    width: 100%;
+}
+
+#id_quantity {
+    display: block;
+    width: 100%;
+}
+
+#id_assortment {
+    display: block;
+    width: 100%;
+}
+
+.btn {
+    transition-duration: 0.4s;
+}
+
+.btn:hover {
+    background-color: #118a1f; /* Green */
+    color: white;
+  }

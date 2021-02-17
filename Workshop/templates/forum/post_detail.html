@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/forum.css' %}">
+
+{% for message in messages %}
+&nbsp;
+<div class="alert alert-warning col-4 offset-4">
+  <div class="text-center">
+    {{ message }}
+  </div>
+</div>
+{% endfor %}
+
+<div class="container">
+    <div class="main-body p-0">
+        <div class="inner-wrapper">  
+            <div class="inner-main">    
+                <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+                    <div class="card mb-2">
+                        <div class="card-body p-2 p-sm-3">
+                            <div class="media forum-item">
+                                <div class="media-body">
+                                    <h6>{{ post.author }}</h6>
+                                    <p class="text-secondary">
+                                        {{ post.body }}
+                                    </p>
+                                    <p class="text-muted"><span class="text-secondary font-weight-bold">{{ post.created_at }}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row bootstrap snippets bootdeys">
+        <div class="col-md-8 col-sm-12">
+            <div class="comment-wrapper">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        Comment panel
+                    </div>
+                    <div class="panel-body">
+                        <form method="POST">
+                        {{ form.as_p }}
+                        {% csrf_token %}
+                        <p class="text-center"><input class="btn btn-link bg-light text-muted" type="submit" value="Post"></p>
+                        </form>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <ul class="media-list">
+                            {% for comment in comments %}
+                            <li class="media">
+                                <div class="media-body">
+                                    <span class="text-muted pull-right">
+                                        <small class="text-muted">{{ comment.created_at }}</small>
+                                    </span>
+                                    <strong class="text-success">{{ comment.from_user }}</strong>
+                                    <p class="text-secondary">
+                                        {{ comment.body }}
+                                    </p>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

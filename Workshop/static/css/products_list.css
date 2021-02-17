@@ -1,0 +1,12 @@
+body { 
+    background-image: linear-gradient(120deg, #cfd9df 0%, #e2ebf0 100%);
+}
+
+.product-card {
+    background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+}
+
+.card-img {
+    margin-left: auto;
+    margin-right: auto;
+}

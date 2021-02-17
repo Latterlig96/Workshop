@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/products_list.css' %}">
+<div class="container" style="width: 70%; margin-top: 150px;">
+    <div class="card">
+        <div class="row">
+            <div class="col">
+                <figure>
+                      <img class="card-img" src="{{ product.logo.url }}">
+                      <figcaption><strong>{{ category.name }}</strong></figcaption>
+                </figure>
+            </div>
+            <div class="col">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>{{ product.name }}</strong></h5>
+                    <p class="card-text">{{ product.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

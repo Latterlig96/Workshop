@@ -16,7 +16,11 @@
             <div class="card">
             <div class="card-body">
                 <div class="align-items-center text-center">
+                {% if customer_profile is None %}
                 <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                {% else %}
+                <img src="{{ customer_profile.image.url }}" alt="Admin" class="rounded-circle" width="150">
+                {% endif %}
                 <div class="mt-4">
                     <h4>{{ request.user }}</h4>
                     <a href="{% url 'customer_edit' %}"><button class="btn btn-primary">Edit Profile</button></a>
@@ -51,16 +55,11 @@
                     <h6 class="mb-0">Phone</h6>
                 </div>
                 <div class="col-sm-9 text-secondary">
-                    Not filled
-                </div>
-                </div>
-                <hr>
-                <div class="row">
-                <div class="col-sm-3">
-                    <h6 class="mb-0">Mobile</h6>
-                </div>
-                <div class="col-sm-9 text-secondary">
-                    Not filled
+                    {% if customer_profile is None %}
+                         Not filled
+                    {% else %}
+                         {{ customer_profile.phone_number }}
+                    {% endif %}
                 </div>
                 </div>
                 <hr>

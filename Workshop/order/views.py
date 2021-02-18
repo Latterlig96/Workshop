@@ -15,7 +15,8 @@ def send_payment_link(request: WSGIRequest,
     order_info = OrderInformation.objects.get(id=id)
     template = render_to_string('order/order_payment_link.html',
                                 context={'name': order_info.name,
-                                         'surname': order_info.surname})
+                                         'surname': order_info.surname,
+                                         'order_id': id})
     email = EmailMessage(
         'Payment Link',
         template,

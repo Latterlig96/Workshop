@@ -65,6 +65,8 @@
             </li>
           </ul>
       {% endif %}
+
+      {% if request.user.is_authenticated %}
       <div class="cart">
         {% with total_items=cart|length %}
           {% if cart|length > 0 %}
@@ -78,6 +80,7 @@
           {% endif %}
         {% endwith %}
       </div>
+      {% endif %}
   </nav>
   <div id="content">
     {% block content %}

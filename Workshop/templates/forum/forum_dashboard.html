@@ -4,9 +4,11 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/forum.css' %}">
 
+{% if request.user|is_owner %}
 <form method="GET" action="{% url 'create_forum' %}">
     <button class="btn btn-primary" type="submit">Create New Forum</button>
 </form>
+{% endif %}
 
 <div class="container">
     <div class="main-body p-0">

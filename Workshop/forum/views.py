@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
-from django.shortcuts import redirect, render, reverse
+from django.shortcuts import redirect, render
 from shop.models import Employee, Owner
 from .forms import CommentsForm, CreateForumForm, CreatePostForm, CreateThreadForm
 from .models import Comments, Forum, Post, Thread
@@ -110,6 +110,7 @@ def thread_list(request: WSGIRequest,
 
 
 @login_required
+@permission_required('shop.can_view_thread')
 def thread_detail(request: WSGIRequest,
                   id: int
                   ) -> HttpResponse:
@@ -123,6 +124,7 @@ def thread_detail(request: WSGIRequest,
 
 
 @login_required
+@permission_required('shop.can_view_post')
 def post_detail(request: WSGIRequest,
                 id: int
                 ) -> HttpResponse:

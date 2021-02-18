@@ -32,7 +32,7 @@ class OrderInformation(models.Model):
     discount = models.IntegerField(default=0,
                                    validators=[MinValueValidator(0),
                                                MaxValueValidator(100)])
-    paid = models.BooleanField()
+    paid = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

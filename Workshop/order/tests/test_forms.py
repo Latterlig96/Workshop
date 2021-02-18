@@ -27,7 +27,7 @@ class OrderInformationTest(TestCase):
             "email": "User@example.com",
             "address": "TestAddress",
             "city": "TestCity",
-            "zipcode": "TestZipCode"
+            "zipcode": "ZipCode"
         }
         form = OrderInformationForm(data=data)
         self.assertTrue(form.is_valid())

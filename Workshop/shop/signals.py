@@ -12,6 +12,8 @@ PERMISSIONS = {
         'can_create_thread',
         'can_create_post',
         'can_resolve_order',
+        'can_view_thread',
+        'can_view_post'
     ),
     'Owners': (
         'can_create_forum',
@@ -25,6 +27,8 @@ PERMISSIONS = {
         'can_add_magazine',
         'can_add_assortment',
         'can_add_category',
+        'can_view_thread',
+        'can_view_post'
         'can_delete_thread',
         'can_delete_post',
     )

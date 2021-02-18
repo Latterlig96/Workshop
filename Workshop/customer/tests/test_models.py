@@ -63,7 +63,7 @@ class CustomerProfileTest(TestCase):
             "phone_number": "333-333-333",
             "image": self.uploaded,
         },
-            {
+        {
             "customer": self.customer,
             "phone_number": None,
             "image": self.uploaded,

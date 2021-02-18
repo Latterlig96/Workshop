@@ -3,7 +3,7 @@ from . import views
 
 
 urlpatterns = [
-    path('process/',
+    path('process/<int:id>',
          views.payment_process,
          name="payment_process"),
     path('done/', 

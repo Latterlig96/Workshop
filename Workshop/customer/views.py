@@ -87,9 +87,15 @@ def log_in(request: WSGIRequest) -> HttpResponse:
 @login_required
 def customer_settings(request: WSGIRequest) -> HttpResponse:
     customer = Customer.objects.get(customer=request.user)
+    try: 
+        customer_profile = CustomerProfile.objects.filter(customer=customer).first()
+    except CustomerProfile.DoesNotExist: 
+        customer_profile = None
+        
     return render(request,
                   'customer/settings.html',
-                  {'customer': customer},
+                  {'customer': customer,
+                  'customer_profile': customer_profile},
                   status=HTTPStatus.OK)
 
 
@@ -102,11 +108,15 @@ def edit(request: WSGIRequest) -> HttpResponse:
                                          data=request.POST)
         if customer_form.is_valid():
             cd: Dict = customer_form.cleaned_data
-            customer_form = customer_form.save(commit=False)
-            CustomerProfile.objects.create(customer=customer,
-                                           phone_number=cd['phone_number'],
-                                           image=cd['image'])
-            customer_form.save()
+            if CustomerProfile.objects.filter(customer=customer).exists(): 
+                customer_profile = CustomerProfile.objects.get(customer=customer)
+                customer_profile.phone_number = cd['phone_number']
+                customer_profile.image = cd['image']
+                customer_profile.save()
+            else:
+                CustomerProfile.objects.create(customer=customer,
+                                            phone_number=cd['phone_number'],
+                                            image=cd['image'])
             messages.success(
                 request, "Your account has been updated successfully")
             return redirect('customer_settings')

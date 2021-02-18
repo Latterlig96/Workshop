@@ -128,6 +128,9 @@ class CustomerEditTest(TestCase):
 
     def test_valid_customer_edit(self):
         data = {
+            "first_name": self.customer.customer.first_name,
+            "last_name": self.customer.customer.last_name, 
+            "email": self.customer.customer.email,
             "customer": self.customer,
             "phone_number": "333-333-333",
             "image": self.uploaded

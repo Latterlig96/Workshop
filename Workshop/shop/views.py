@@ -266,20 +266,31 @@ def producent_products_filter_list(request: WSGIRequest,
 @login_required
 def employee_settings(request: WSGIRequest) -> HttpResponse:
     employee = Employee.objects.get(employee=request.user)
+    try:
+        employee_profile = EmployeeProfile.objects.get(employee=employee)
+    except EmployeeProfile.DoesNotExist: 
+        employee_profile = None
+
     return render(request,
                   'shop/employee/employee_settings.html',
-                  {'employee': employee},
+                  {'employee': employee,
+                   'employee_profile': employee_profile},
                   status=HTTPStatus.OK)
 
 
 @login_required
 def owner_settings(request: WSGIRequest) -> HttpResponse:
     owner = Owner.objects.get(owner=request.user)
+    try: 
+        owner_profile = OwnerProfile.objects.get(owner=owner)
+    except OwnerProfile.DoesNotExist: 
+        owner_profile = None
+        
     return render(request,
                   'shop/owner/owner_settings.html',
-                  {'owner': owner},
+                  {'owner': owner,
+                   'owner_profile': owner_profile},
                   status=HTTPStatus.OK)
-
 
 @login_required
 def employee_dashboard(request: WSGIRequest) -> HttpResponse:

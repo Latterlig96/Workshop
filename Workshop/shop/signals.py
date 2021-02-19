@@ -12,6 +12,7 @@ PERMISSIONS = {
         'can_create_thread',
         'can_create_post',
         'can_resolve_order',
+        'can_view_dashboard'
         'can_view_thread',
         'can_view_post'
     ),
@@ -28,7 +29,8 @@ PERMISSIONS = {
         'can_add_assortment',
         'can_add_category',
         'can_view_thread',
-        'can_view_post'
+        'can_view_post',
+        'can_view_dashboard',
         'can_delete_thread',
         'can_delete_post',
     )

@@ -419,7 +419,7 @@ class OwnerTest(TestCase):
         login = self.client.login(
             username="ExampleUser", password="ExamplePassword")
         response = self.client.get('/shop/owner/panel/')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'shop/owner/owner_dashboard.html')
 
     def test_get_owner_dashboard_url_by_location(self):

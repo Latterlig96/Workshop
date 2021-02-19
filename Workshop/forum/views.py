@@ -85,6 +85,7 @@ def create_post(request: WSGIRequest) -> HttpResponse:
 
 
 @login_required
+@permission_required('shop.can_view_dashboard')
 def forum_dashboard(request: WSGIRequest) -> HttpResponse:
     if is_employee(request.user):
         employee = Employee.objects.get(employee=request.user)
@@ -97,8 +98,8 @@ def forum_dashboard(request: WSGIRequest) -> HttpResponse:
                   {'forums': forums},
                   status=HTTPStatus.OK)
 
-
 @login_required
+@permission_required('shop.can_view_thread')
 def thread_list(request: WSGIRequest,
                 id: int
                 ) -> HttpResponse:

@@ -1,0 +1,7 @@
+{% if employees is not None %}
+{% for employee in employees %}
+ {{employee.employee.first_name}}
+{% endfor %}
+{% else %}
+    None
+{% endif %}

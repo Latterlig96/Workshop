@@ -21,6 +21,7 @@ PERMISSIONS = {
         'can_create_thread',
         'can_create_post',
         'can_create_task',
+        'can_create_coupons',
         'can_delete_employee',
         'can_add_employee',
         'can_add_producent',

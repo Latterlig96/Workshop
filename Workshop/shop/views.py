@@ -1,6 +1,5 @@
 from http import HTTPStatus
 from typing import Dict
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -527,4 +526,19 @@ def task_list(request: WSGIRequest) -> HttpResponse:
     return render(request,
                   'shop/tasks/task_list.html',
                   {'tasks': tasks},
+                  status=HTTPStatus.OK)
+
+@login_required
+def employee_list(request: WSGIRequest,
+                  ) -> HttpResponse:
+    owner = Owner.objects.get(owner=request.user)
+    try:
+        shop = Shop.objects.get(name=owner.shop.name)
+        employees = Employee.objects.filter(shop__id=shop.id).all()
+    except (Employee.DoesNotExist, Shop.DoesNotExist): 
+        employees = None
+        
+    return render(request,
+                  'shop/owner/employee_list.html',
+                  {'employees': employees},
                   status=HTTPStatus.OK)

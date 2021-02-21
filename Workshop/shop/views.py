@@ -136,6 +136,8 @@ def dashboard(request: WSGIRequest) -> HttpResponse:
     filter = ProductFilter(request.GET, queryset=Product.objects.all())
     producents = Producent.objects.all()
     categories = Category.objects.all()
+    products = Product.objects.all()
+    cart_product_form = CartAddProductForm()
     name = request.GET.get("name")
     if name:
         return redirect('products_list', filter=name)
@@ -143,9 +145,10 @@ def dashboard(request: WSGIRequest) -> HttpResponse:
                   'shop/dashboard.html',
                   {'filter': filter,
                    'producents': producents,
-                   'categories': categories},
+                   'categories': categories,
+                   'products:': products,
+                   'cart_product_form': cart_product_form},
                   status=HTTPStatus.OK)
-
 
 @login_required
 def product_detail(request: WSGIRequest,
@@ -532,13 +535,22 @@ def task_list(request: WSGIRequest) -> HttpResponse:
 def employee_list(request: WSGIRequest,
                   ) -> HttpResponse:
     owner = Owner.objects.get(owner=request.user)
+    shop = Shop.objects.get(name=owner.shop.name)
     try:
-        shop = Shop.objects.get(name=owner.shop.name)
         employees = Employee.objects.filter(shop__id=shop.id).all()
-    except (Employee.DoesNotExist, Shop.DoesNotExist): 
+    except Employee.DoesNotExist: 
         employees = None
         
     return render(request,
                   'shop/owner/employee_list.html',
                   {'employees': employees},
+                  status=HTTPStatus.OK)
+
+@login_required
+def shop_assets(request: WSGIRequest) -> HttpResponse: 
+    owner = Owner.objects.get(owner=request.user)
+    shop = Shop.objects.get(name=owner.shop.name)
+    return render(request, 
+                  'shop/owner/shop_assets.html',
+                  {'shop': shop},
                   status=HTTPStatus.OK)

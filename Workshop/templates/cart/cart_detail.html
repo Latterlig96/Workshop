@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+  <link rel="stylesheet" href="{% static 'css/cart.css' %}">
   <h1>Your shopping cart</h1>
   <table class="cart">
     <thead>
@@ -76,6 +77,6 @@
   </form>
   <p class="text-right">
     <a href="{% url 'dashboard' %}" class="button light">Continue shopping</a>
-    <a href="#" class="button">Checkout</a>
+    <a href="{% url 'product_order_from_chcekout' %}" class="button">Checkout</a>
   </p>
 {% endblock %}

@@ -1,1 +1,15 @@
-TODO
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% for producent in shop.producent.all %}
+    {{ producent }}
+{% endfor %}
+
+{% for magazine in shop.magazine.all %}
+    {{ magazine }}
+{% endfor %}
+
+{% for assortment in shop.magazine.assortment.all %}
+    {{ assortment }}
+{% endfor %}
+{% endblock %}

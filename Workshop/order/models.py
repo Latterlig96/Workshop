@@ -40,8 +40,7 @@ class OrderInformation(models.Model):
 
 
 class OrderItem(models.Model):
-    product = models.ForeignKey(Product,
-                                on_delete=models.CASCADE)
+    product = models.ManyToManyField(Product)
     quantity = models.IntegerField(blank=False,
                                    null=False)
     created_at = models.DateTimeField(auto_now_add=True)

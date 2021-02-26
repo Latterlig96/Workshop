@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Dict
+from typing import Dict, List
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -10,6 +10,7 @@ from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
+from cart.cart import Cart
 from cart.forms import CartAddProductForm
 from order.forms import OrderInformationForm
 from order.models import OrderInformation, OrderItem
@@ -150,6 +151,7 @@ def dashboard(request: WSGIRequest) -> HttpResponse:
                    'cart_product_form': cart_product_form},
                   status=HTTPStatus.OK)
 
+
 @login_required
 def product_detail(request: WSGIRequest,
                    name: str
@@ -177,10 +179,10 @@ def product_order(request: WSGIRequest,
                                                          address=cd['address'],
                                                          city=cd['city'],
                                                          zipcode=cd['zipcode'])
-            OrderItem.objects.create(product=product,
-                                     quantity=1,
-                                     order_information=order_info,
-                                     shop=shop)
+            order_item = OrderItem.objects.create(quantity=1,
+                                                  order_information=order_info,
+                                                  shop=shop)
+            order_item.product.add(product)
             return render(request,
                           'order/order_done.html',
                           {'user': request.user},
@@ -192,6 +194,47 @@ def product_order(request: WSGIRequest,
                       'order/create_order.html',
                       {'form': order_form,
                        'product': product},
+                      status=HTTPStatus.OK)
+
+
+@login_required
+def product_order_from_checkout(request: WSGIRequest) -> HttpResponse:
+    cart = Cart(request)
+    products: List[Product] = [] 
+    quantities: List[int] = []
+    if not cart.cart: 
+        return render(request,
+                      'cart/cart_empty.html',
+                      status=HTTPStatus.NOT_FOUND)
+    for item in cart: 
+        products.append(item['product'])
+        quantities.append(item['quantity'])
+    if request.method == "POST":
+        order_form = OrderInformationForm(request.POST)
+        if order_form.is_valid(): 
+            cd: Dict = order_form.cleaned_data
+            order_info = OrderInformation.objects.create(name=cd['name'],
+                                                         surname=cd['surname'],
+                                                         email=cd['email'],
+                                                         address=cd['address'],
+                                                         city=cd['city'],
+                                                         zipcode=cd['zipcode'])
+            for product, quantity in zip(products, quantities):
+                shop = Shop.objects.get(magazine__assortment__product=product)
+                order_item = OrderItem.objects.create(quantity=quantity,
+                                                    order_information=order_info,
+                                                    shop=shop)
+                order_item.product.add(product)
+            return render(request,
+                        'order/order_done.html',
+                        {'user': request.user},
+                        status=HTTPStatus.OK)
+    else: 
+        order_form = OrderInformationForm()
+    return render(request,
+                      'order/create_order_from_checkout.html',
+                      {'form': order_form,
+                       'products': products},
                       status=HTTPStatus.OK)
 
 
@@ -293,6 +336,7 @@ def owner_settings(request: WSGIRequest) -> HttpResponse:
                   {'owner': owner,
                    'owner_profile': owner_profile},
                   status=HTTPStatus.OK)
+
 
 @login_required
 def employee_dashboard(request: WSGIRequest) -> HttpResponse:
@@ -531,6 +575,7 @@ def task_list(request: WSGIRequest) -> HttpResponse:
                   {'tasks': tasks},
                   status=HTTPStatus.OK)
 
+
 @login_required
 def employee_list(request: WSGIRequest,
                   ) -> HttpResponse:
@@ -545,6 +590,7 @@ def employee_list(request: WSGIRequest,
                   'shop/owner/employee_list.html',
                   {'employees': employees},
                   status=HTTPStatus.OK)
+
 
 @login_required
 def shop_assets(request: WSGIRequest) -> HttpResponse: 

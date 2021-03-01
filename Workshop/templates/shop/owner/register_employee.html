@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+&nbsp;
+<div class="container">
+	<div class="d-flex justify-content-center">
+		<div class="card">
+			<div class="card-header">
+				<h3 class="text-center">Register</h3>
+			</div>
+			<div class="card-body">
+				<form method="POST" enctype="multipart/form-data">
+					{{ form.as_p }}
+					{% csrf_token %}
+					<p class="text-center"><input class="btn" type="submit" value="Register"></p>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

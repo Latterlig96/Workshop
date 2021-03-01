@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/errors.css' %}">
+<div class="mainbox">
+      <div class="err">4</div>
+        <i class="far fa-question-circle fa-spin"></i>
+      <div class="err2">4</div>
+      <div class="msg">Seems like you are not listed on our employees list, please inform owner about any changes in email or mistakes. Here you can easily go to <a href="{% url 'dashboard' %}">main page</a></div>
+</div>
+{% endblock %}

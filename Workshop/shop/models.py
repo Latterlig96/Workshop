@@ -91,7 +91,14 @@ class Employee(models.Model):
     def __str__(self):
         return f"{self.employee.first_name} {self.employee.last_name}"
 
-
+class NewEmployee(models.Model):
+    email = models.EmailField(max_length=50,
+                              blank=False,
+                              null=False)
+    
+    def __str__(self): 
+        return f"New employee {self.email}"
+    
 class EmployeeProfile(models.Model):
     employee = models.ForeignKey(Employee,
                                  on_delete=models.CASCADE)

@@ -1,7 +1,8 @@
 from typing import Dict
 from django import forms
 from django.contrib.auth.models import User
-from .models import Assortment, Category, Magazine, Producent, Product, Shop, Task
+from .models import Assortment, Category, Magazine, Producent,\
+                    Product, Shop, Task, NewEmployee
 
 
 class EmployeeRegisterForm(forms.ModelForm):
@@ -97,8 +98,19 @@ class MagazineRegisterForm(forms.ModelForm):
         model = Magazine
         fields = '__all__'
 
+class NewEmployeeRegisterForm(forms.ModelForm):
+    class Meta: 
+        model = NewEmployee
+        fields = '__all__'
 
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = '__all__'
+
+class TaskStatusForm(forms.ModelForm): 
+    status = forms.ChoiceField(choices=Task.STATUS,
+                               required=True)
+    class Meta: 
+        model = Task
+        fields = ('status',)

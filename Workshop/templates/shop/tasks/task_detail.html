@@ -10,6 +10,11 @@
                     <h5 class="card-title"><strong>From: {{ task.task_from }} To: {{task.task_to}}</strong></h5>
                     <h4 class="card-title"><strong>Deadline: {{ task.execution_time }}</strong></h4>
                     <h3 class="card-title"><strong>Status: {{ task.status }}</strong></h3>
+                    <form method="POST">
+                        {{ form.as_p }}
+                        {% csrf_token %}
+                    <p class="text-center"><input class="btn btn-link bg-light text-muted" type="submit" value="Change"></p>
+                    </form>
                     <p class="card-text">{{ task.description }}</p>
                 </div>
             </div>

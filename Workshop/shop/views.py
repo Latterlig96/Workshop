@@ -17,9 +17,9 @@ from order.models import OrderInformation, OrderItem
 from .filters import ProductFilter
 from .forms import AssortmentRegisterForm, CategoryRegisterForm, EmployeeEditForm, EmployeeLoginForm, \
     EmployeeRegisterForm, MagazineRegisterForm, OwnerEditForm, OwnerLoginForm, ProducentRegisterForm, \
-    ProductRegisterForm, TaskForm
+    ProductRegisterForm, TaskForm, TaskStatusForm, NewEmployeeRegisterForm
 from .models import Assortment, Category, Employee, EmployeeProfile, Magazine, Owner, OwnerProfile, Producent, \
-    Product, Shop, Task
+    Product, Shop, Task, NewEmployee
 from .utils import create_username_from_email, is_employee, is_owner
 
 
@@ -28,27 +28,31 @@ def register(request: WSGIRequest) -> HttpResponse:
         employee_form = EmployeeRegisterForm(request.POST)
         if employee_form.is_valid():
             cd: Dict = employee_form.cleaned_data
-            user = User.objects.create_user(username=create_username_from_email(cd),
+            if NewEmployee.objects.filter(email=cd['email']).exists():
+                user = User.objects.create_user(username=create_username_from_email(cd),
                                             email=cd["email"],
                                             password=cd["password"],
                                             first_name=cd["first_name"],
                                             last_name=cd["last_name"])
-            Employee.objects.create(employee=user,
-                                    shop=cd['shop'])
-            template = render_to_string('shop/employee/email_template.html',
-                                        context={'name': user.first_name})
-            email = EmailMessage(
-                'Registration success',
-                template,
-                settings.EMAIL_HOST_USER,
-                [user.email])
-            email.fail_silently = False
-            email.send()
-
+                Employee.objects.create(employee=user,
+                                        shop=cd['shop'])
+                NewEmployee.objects.get(email=cd['email']).delete()
+                template = render_to_string('shop/employee/email_template.html',
+                                            context={'name': user.first_name})
+                email = EmailMessage(
+                    'Registration success',
+                    template,
+                    settings.EMAIL_HOST_USER,
+                    [user.email])
+                email.fail_silently = False
+                email.send()
+                return render(request,
+                            'shop/employee/register_done.html',
+                            {'form': cd},
+                            status=HTTPStatus.OK)
             return render(request,
-                          'shop/employee/register_done.html',
-                          {'form': cd},
-                          status=HTTPStatus.OK)
+                          'errors/register_error.html',
+                          status=HTTPStatus.NOT_FOUND)
     else:
         employee_form = EmployeeRegisterForm()
     return render(request,
@@ -310,6 +314,10 @@ def producent_products_filter_list(request: WSGIRequest,
 
 @login_required
 def employee_settings(request: WSGIRequest) -> HttpResponse:
+    if not is_employee(request.user):
+        return render(request,
+                      'errors/404.html',
+                      status=HTTPStatus.NOT_FOUND)
     employee = Employee.objects.get(employee=request.user)
     try:
         employee_profile = EmployeeProfile.objects.get(employee=employee)
@@ -325,6 +333,10 @@ def employee_settings(request: WSGIRequest) -> HttpResponse:
 
 @login_required
 def owner_settings(request: WSGIRequest) -> HttpResponse:
+    if not is_owner(request.user): 
+        return render(request, 
+                      'errors/404.html',
+                      status=HTTPStatus.NOT_FOUND)
     owner = Owner.objects.get(owner=request.user)
     try: 
         owner_profile = OwnerProfile.objects.get(owner=owner)
@@ -340,6 +352,10 @@ def owner_settings(request: WSGIRequest) -> HttpResponse:
 
 @login_required
 def employee_dashboard(request: WSGIRequest) -> HttpResponse:
+    if not is_employee(request.user): 
+        return render(request,
+                      'errors/404.html',
+                      status=HTTPStatus.NOT_FOUND)
     return render(request,
                   'shop/employee/employee_dashboard.html',
                   status=HTTPStatus.OK)
@@ -347,6 +363,10 @@ def employee_dashboard(request: WSGIRequest) -> HttpResponse:
 
 @login_required
 def employee_edit(request: WSGIRequest) -> HttpResponse:
+    if not is_employee(request.user): 
+        return render(request,
+                      'errors/404.html',
+                      status=HTTPStatus.NOT_FOUND)
     employee = Employee.objects.get(employee=request.user)
     if request.method == 'POST':
         employee_form = EmployeeEditForm(instance=employee.employee,
@@ -381,6 +401,10 @@ def employee_edit(request: WSGIRequest) -> HttpResponse:
 
 @login_required
 def owner_edit(request: WSGIRequest) -> HttpResponse:
+    if not is_owner(request.user): 
+        return render(request,
+                      'errors/404.html',
+                      status=HTTPStatus.NOT_FOUND)
     owner = Owner.objects.get(owner=request.user)
     if request.method == 'POST':
         owner_form = OwnerEditForm(instance=owner.owner,
@@ -414,6 +438,10 @@ def owner_edit(request: WSGIRequest) -> HttpResponse:
 
 @login_required
 def owner_dashboard(request: WSGIRequest) -> HttpResponse:
+    if not is_owner(request.user):
+        return render(request,
+                      'errors/404.html',
+                      status=HTTPStatus.NOT_FOUND)
     owner = Owner.objects.get(owner=request.user)
     return render(request,
                   'shop/owner/owner_dashboard.html',
@@ -529,6 +557,21 @@ def register_new_magazine(request: WSGIRequest) -> HttpResponse:
                       {'form': magazine_form},
                       status=HTTPStatus.OK)
 
+@login_required
+def register_new_employee(request: WSGIRequest) -> HttpResponse: 
+    if request.method == "POST":
+        employee_form = NewEmployeeRegisterForm(request.POST)
+        if employee_form.is_valid(): 
+            cd: Dict = employee_form.cleaned_data 
+            NewEmployee.objects.create(email=cd['email'])
+            messages.success(request, "New employee email registered successfull")
+            return redirect('owner_dashboard')
+    else: 
+        employee_form = NewEmployeeRegisterForm()
+        return render(request,
+                      'shop/owner/register_employee.html',
+                      {'form': employee_form},
+                      status=HTTPStatus.OK)
 
 @login_required
 @permission_required('shop.can_create_task')
@@ -552,17 +595,33 @@ def create_task(request: WSGIRequest) -> HttpResponse:
 
 
 @login_required
+@permission_required('shop.can_view_task')
 def task_detail(request: WSGIRequest,
                 id: int
                 ) -> HttpResponse:
     task = Task.objects.get(id=id)
-    return render(request,
+    if request.method == "POST":
+        task_form = TaskStatusForm(request.POST)
+        if task_form.is_valid(): 
+            cd: Dict = task_form.cleaned_data
+            task.status = cd['status']
+            task.save()
+            return render(request,
                   'shop/tasks/task_detail.html',
-                  {'task': task},
+                  {'task': task,
+                   'form': TaskStatusForm()},
                   status=HTTPStatus.OK)
+    else: 
+        task_form = TaskStatusForm()    
+        return render(request,
+                    'shop/tasks/task_detail.html',
+                    {'task': task,
+                     'form': task_form},
+                    status=HTTPStatus.OK)
 
 
 @login_required
+@permission_required('shop.can_view_task')
 def task_list(request: WSGIRequest) -> HttpResponse:
     if is_employee(request.user):
         employee = Employee.objects.get(employee=request.user)
@@ -577,6 +636,7 @@ def task_list(request: WSGIRequest) -> HttpResponse:
 
 
 @login_required
+@permission_required('shop.can_view_employee_list')
 def employee_list(request: WSGIRequest,
                   ) -> HttpResponse:
     owner = Owner.objects.get(owner=request.user)
@@ -593,6 +653,7 @@ def employee_list(request: WSGIRequest,
 
 
 @login_required
+@permission_required('shop.can_view_shop_assets')
 def shop_assets(request: WSGIRequest) -> HttpResponse: 
     owner = Owner.objects.get(owner=request.user)
     shop = Shop.objects.get(name=owner.shop.name)

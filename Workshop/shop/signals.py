@@ -12,8 +12,9 @@ PERMISSIONS = {
         'can_create_thread',
         'can_create_post',
         'can_resolve_order',
-        'can_view_dashboard'
+        'can_view_dashboard',
         'can_view_thread',
+        'can_view_task',
         'can_view_post'
     ),
     'Owners': (
@@ -22,18 +23,21 @@ PERMISSIONS = {
         'can_create_post',
         'can_create_task',
         'can_create_coupons',
-        'can_delete_employee',
+        'can_view_task',
+        'can_view_thread',
+        'can_view_post',
+        'can_view_dashboard',
+        'can_view_shop_assets',
+        'can_view_employee_list',
         'can_add_employee',
         'can_add_producent',
         'can_add_product',
         'can_add_magazine',
         'can_add_assortment',
         'can_add_category',
-        'can_view_thread',
-        'can_view_post',
-        'can_view_dashboard',
         'can_delete_thread',
         'can_delete_post',
+        'can_delete_employee'
     )
 }
 

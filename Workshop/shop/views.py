@@ -558,6 +558,7 @@ def register_new_magazine(request: WSGIRequest) -> HttpResponse:
                       status=HTTPStatus.OK)
 
 @login_required
+@permission_required('shop.can_add_employee')
 def register_new_employee(request: WSGIRequest) -> HttpResponse: 
     if request.method == "POST":
         employee_form = NewEmployeeRegisterForm(request.POST)

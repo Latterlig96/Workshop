@@ -1,7 +1,27 @@
-{% if employees is not None %}
-{% for employee in employees %}
- {{employee.employee.first_name}}
-{% endfor %}
-{% else %}
-    None
-{% endif %}
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+        {% if employees is not None %}
+        {% for employee in employees %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{employee.employee.first_name}}</td>
+            <td>{{employee.employee.last_name}}</td>
+            <td><button type="button" class="btn btn-danger">Delete</button></td>
+        </tr>
+        {% endfor %}
+        {% else %}
+            None
+        {% endif %}
+  </table>
+{% endblock %}

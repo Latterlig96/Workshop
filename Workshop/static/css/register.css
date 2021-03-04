@@ -86,6 +86,72 @@ body {
     width: 100%;
 }
 
+#id_groups {
+    display: block;
+    width: 100%;
+}
+
+
+#id_assortment {
+    display: block;
+    width: 100%;
+}
+
+#id_title {
+    display: block;
+    width: 100%;
+}
+
+#id_threads {
+    display: block;
+    width: 100%;
+}
+
+#id_thread {
+    display: block;
+    width: 100%;
+}
+
+#id_posts {
+    display: block;
+    width: 100%;
+}
+
+#id_forum {
+    display: block;
+    width: 100%;
+}
+
+#id_views {
+    display: block;
+    width: 100%;
+}
+
+#id_body {
+    display: block;
+    width: 100%;
+}
+
+#id_task_from {
+    display: block;
+    width: 100%;
+}
+
+#id_task_to {
+    display: block;
+    width: 100%;
+}
+
+#id_status {
+    display: block;
+    width: 100%;
+}
+
+#id_execution_time {
+    display: block;
+    width: 100%;
+}
+
 .btn {
     transition-duration: 0.4s;
 }

@@ -7,6 +7,14 @@
     <button class="btn btn-primary" type="submit">Create New Post</button>
 </form>
 
+{% for message in messages %}
+<div class="alert alert-warning col-4 offset-4">
+  <div class="text-center">
+    {{ message }}
+  </div>
+</div>
+{% endfor %}
+
 <div class="container">
     <div class="main-body p-0">
         <div class="inner-wrapper">  

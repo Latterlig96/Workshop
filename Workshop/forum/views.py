@@ -18,11 +18,12 @@ def create_forum(request: WSGIRequest) -> HttpResponse:
         forum_form = CreateForumForm(request.POST)
         if forum_form.is_valid():
             cd: Dict = forum_form.cleaned_data
-            new_forum = Forum.objects.create(title=cd['title'],
+            new_forum = Forum.objects.create(shop=cd['shop'],
+                                             title=cd['title'],
                                              description=cd['description'],
                                              threads=0,
                                              posts=0)
-            new_forum.add(cd['group'])
+            new_forum.groups.add(*cd['groups'])
             messages.success(request, "Forum has been successfully created")
             return redirect('owner_dashboard')
     else:

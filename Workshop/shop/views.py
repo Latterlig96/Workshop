@@ -14,6 +14,7 @@ from cart.cart import Cart
 from cart.forms import CartAddProductForm
 from order.forms import OrderInformationForm
 from order.models import OrderInformation, OrderItem
+from django.db.models import ProtectedError
 from .filters import ProductFilter
 from .forms import AssortmentRegisterForm, CategoryRegisterForm, EmployeeEditForm, EmployeeLoginForm, \
     EmployeeRegisterForm, MagazineRegisterForm, OwnerEditForm, OwnerLoginForm, ProducentRegisterForm, \
@@ -305,12 +306,16 @@ def producent_products_filter_list(request: WSGIRequest,
         for magazine in shop.magazine.iterator():
             for assortment in magazine.assortment.iterator():
                 products.append(assortment.product)
-    return render(request,
-                  'shop/products_list.html',
-                  {'products': products,
-                   'cart_product_form': cart_product_form},
-                  status=HTTPStatus.OK)
+    
+    if products:
+        return render(request,
+                    'shop/products_list.html',
+                    {'products': products,
+                    'cart_product_form': cart_product_form},
+                    status=HTTPStatus.OK)
 
+    messages.error(request, "No products found from given producent")
+    return redirect('dashboard')
 
 @login_required
 def employee_settings(request: WSGIRequest) -> HttpResponse:
@@ -652,6 +657,71 @@ def employee_list(request: WSGIRequest,
                   {'employees': employees},
                   status=HTTPStatus.OK)
 
+@login_required 
+@permission_required('shop.can_delete_employee')
+def delete_employee(request: WSGIRequest,
+                    id: int
+                    ) -> HttpResponse: 
+    employee = Employee.objects.get(id=id)
+    try:
+        employee.delete() 
+    except ProtectedError: 
+        return render(request,
+                      'errors/404.html',
+                      status=HTTPStatus.NOT_FOUND)
+    messages.success(request, "Employee deleted sucessfully")
+    return redirect('employee_list') 
+
+@login_required
+@permission_required('shop.can_delete_producent')
+def delete_producent(request: WSGIRequest,
+                     name: str
+                     ) -> HttpResponse:
+    owner = Owner.objects.get(owner=request.user)
+    shop = Shop.objects.get(name=owner.shop.name)
+    try: 
+        shop.producent.get(name=name).delete()
+        shop.save()
+    except ProtectedError:
+        return render(request,
+                      'errors/404.html',
+                      status=HTTPStatus.NOT_FOUND)
+    messages.success(request, "Producent deleted sucessfully")
+    return redirect('shop_assets') 
+
+@login_required
+@permission_required('shop.can_delete_producent')
+def delete_producent(request: WSGIRequest,
+                     name: str
+                     ) -> HttpResponse:
+    owner = Owner.objects.get(owner=request.user)
+    shop = Shop.objects.get(name=owner.shop.name)
+    try: 
+        shop.producent.get(name=name).delete()
+        shop.save()
+    except ProtectedError:
+        return render(request,
+                      'errors/404.html',
+                      status=HTTPStatus.NOT_FOUND)
+    messages.success(request, "Producent deleted sucessfully")
+    return redirect('shop_assets') 
+    
+@login_required 
+@permission_required('shop.can_delete_magazine')
+def delete_magazine(request: WSGIRequest, 
+                    address: str
+                    ) -> HttpResponse: 
+    owner = Owner.objects.get(owner=request.user)
+    shop = Shop.objects.get(name=owner.shop.name)
+    try: 
+        shop.magazine.get(address=address).delete()
+        shop.save()
+    except ProtectedError:
+        return render(request,
+                      'errors/404.html',
+                      status=HTTPStatus.NOT_FOUND)
+    messages.success(request, "Magazine deleted sucessfully")
+    return redirect('shop_assets') 
 
 @login_required
 @permission_required('shop.can_view_shop_assets')

@@ -28,7 +28,10 @@
                         <td>{{ forloop.counter }}</td>
                         <td>{{ producent.logo }}</td>
                         <td>{{ producent.name }}</td>
-                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                        <form action="{% url 'producent_delete' producent.pk %}" method="POST">
+                          {% csrf_token %}
+                          <td><button type="submit" class="btn btn-danger">Delete</button></td>
+                        </form>
                     </tr>
                     {% endfor %}
               </table>    
@@ -58,7 +61,10 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ magazine.address }}</td>
-                        <td><button type="button" class="btn btn-danger">Delete</button></td>
+                        <form action="{% url 'magazine_delete' magazine.address %}" method="POST">
+                          {% csrf_token %}
+                          <td><button type="submit" class="btn btn-danger">Delete</button></td>
+                        </form>
                     </tr>
                     {% endfor %}
             </table>    

@@ -38,9 +38,11 @@ PERMISSIONS = {
         'can_delete_thread',
         'can_delete_post',
         'can_delete_employee'
+        'can_delete_producent',
+        'can_delete_magazine',
+        'can_delete_assortment'
     )
 }
-
 
 @receiver(pre_save, sender=User)
 def set_username(sender: User,

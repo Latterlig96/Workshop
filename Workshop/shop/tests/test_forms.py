@@ -3,8 +3,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import transaction
 from django.test import TestCase
 from ..forms import AssortmentRegisterForm, CategoryRegisterForm, EmployeeEditForm, EmployeeLoginForm, \
-    EmployeeRegisterForm, MagazineRegisterForm, ProducentRegisterForm, ProductRegisterForm
-from ..models import Assortment, Category, Employee, Magazine, Producent, Product, Shop
+    EmployeeRegisterForm, MagazineRegisterForm, ProducentRegisterForm, ProductRegisterForm, OwnerEditForm
+from ..models import Assortment, Category, Employee, Magazine, Producent, Product, Shop, Owner
 
 
 class EmployeeRegisterTest(TestCase):
@@ -183,6 +183,61 @@ class EmployeeProfileTest(TestCase):
         form = EmployeeEditForm(data=data)
         self.assertFalse(form.is_valid())
 
+class OwnerProfileTest(TestCase): 
+
+    def setUp(self):
+        small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
+            b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
+            b'\x02\x4c\x01\x00\x3b'
+        )
+
+        self.uploaded = SimpleUploadedFile('small.gif',
+                                           small_gif, content_type='image/gif')
+
+        self.user = User.objects.create_user(
+            username="ExampleUser",
+            email="User@example.com",
+            first_name="User",
+            last_name="User-Surname",
+            password="ExamplePassword")
+
+        self.producent = Producent.objects.create(name="TestProducent")
+        self.category = Category.objects.create(name="TestCategory")
+        self.product = Product.objects.create(name="Product",
+                                              description="Example",
+                                              category=self.category,
+                                              price=20)
+        self.assortment = Assortment.objects.create(product=self.product,
+                                                    quantity=20,
+                                                    category=self.category)
+        self.magazine = Magazine.objects.create(address="SimpleMagazine")
+        self.magazine.assortment.add(self.assortment)
+        self.shop = Shop.objects.create(name="TestShop",
+                                        address="TestAdress")
+        self.shop.producent.add(self.producent)
+        self.shop.magazine.add(self.magazine)
+        self.owner = Owner.objects.create(owner=self.user, 
+                                          shop=self.shop,
+                                          has_ownership=True)
+        
+    def test_valid_owner_profile(self):
+        data = {
+            "owner": self.owner,
+            "phone_numer": "333-333-333",
+            "image": self.uploaded,
+        }
+        form = OwnerEditForm(data=data)
+        self.assertTrue(form.is_valid())
+
+    def test_invalid_customer_profile_create(self):
+        data = {
+            "owner": None,
+            "phone-number": "333-333-333",
+            "image": self.uploaded
+        }
+        form = OwnerEditForm(data=data)
+        self.assertFalse(form.is_valid())
 
 class ProducentRegisterTest(TestCase):
 

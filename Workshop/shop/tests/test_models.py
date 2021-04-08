@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import transaction
+import datetime
 from django.db.utils import IntegrityError
 from django.test import TestCase
-from shop.models import Assortment, Category, Employee, EmployeeProfile, Magazine, Producent, Product, Shop
+from shop.models import Assortment, Category, Employee, EmployeeProfile, Magazine, Producent, Product, Shop, Owner, OwnerProfile, Task
 
 
 class ProducentTest(TestCase):
@@ -36,7 +37,6 @@ class ProducentTest(TestCase):
         with self.assertRaises(IntegrityError):
             producent = Producent.objects.create(logo=self.uploaded, name=None)
             self.assertEqual(1, Producent.objects.count())
-
 
 class ProductTest(TestCase):
 
@@ -421,3 +421,225 @@ class EmployeeProfileTest(TestCase):
             with transaction.atomic():
                 employee_profile = EmployeeProfile.objects.create(**test_case)
                 self.assertTrue(0, EmployeeProfile.objects.count())
+
+class OwnerTest(TestCase):
+    
+    def setUp(self):
+
+        small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
+            b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
+            b'\x02\x4c\x01\x00\x3b'
+        )
+        self.uploaded = SimpleUploadedFile('small.gif',
+                                           small_gif, content_type='image/gif')
+
+        self.user = User.objects.create_user(
+            username="ExampleUser",
+            email="User@example.com",
+            first_name="User",
+            last_name="User-Surname",
+            password="ExamplePassword")
+
+        self.producent = Producent.objects.create(logo=self.uploaded,
+                                                  name="TestProducent")
+        self.category = Category.objects.create(category_logo=self.uploaded,
+                                                name="TestCategory")
+        self.product = Product.objects.create(logo=self.uploaded,
+                                              name="Product",
+                                              description="Example",
+                                              category=self.category,
+                                              price=20)
+        self.assortment = Assortment.objects.create(product=self.product,
+                                                    quantity=20,
+                                                    category=self.category)
+        self.magazine = Magazine.objects.create(address="SimpleMagazine")
+        self.magazine.assortment.add(self.assortment)
+        self.shop = Shop.objects.create(name="TestShop",
+                                        address="TestAdress")
+        self.shop.producent.add(self.producent)
+        self.shop.magazine.add(self.magazine)
+
+    def test_create_owner(self): 
+        owner = Owner.objects.create(owner=self.user,
+                                     shop=self.shop,
+                                     has_ownership=True)
+        self.assertEqual(1, Owner.objects.count())
+    
+    def test_create_owner_null_values(self): 
+        test_cases = [{
+            "owner": None,
+            "shop": self.shop,
+            "has_ownership": True
+        },
+        {
+            "owner": self.user,
+            "shop": None,
+            "has_ownership": True
+        }]
+
+        for test_case in test_cases: 
+            with transaction.atomic(): 
+                owner = Owner.objects.create(**test_case)
+                self.assertEqual(0, Owner.objects.count()) 
+
+class OwnerProfileTest(TestCase):
+    
+    def setUp(self):
+        small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
+            b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
+            b'\x02\x4c\x01\x00\x3b'
+        )
+        self.uploaded = SimpleUploadedFile('small.gif',
+                                           small_gif, content_type='image/gif')
+
+        self.user = User.objects.create_user(
+            username="ExampleUser",
+            email="User@example.com",
+            first_name="User",
+            last_name="User-Surname",
+            password="ExamplePassword")
+
+        self.producent = Producent.objects.create(logo=self.uploaded,
+                                                  name="TestProducent")
+        self.category = Category.objects.create(category_logo=self.uploaded,
+                                                name="TestCategory")
+        self.product = Product.objects.create(logo=self.uploaded,
+                                              name="Product",
+                                              description="Example",
+                                              category=self.category,
+                                              price=20)
+        self.assortment = Assortment.objects.create(product=self.product,
+                                                    quantity=20,
+                                                    category=self.category)
+        self.magazine = Magazine.objects.create(address="SimpleMagazine")
+        self.magazine.assortment.add(self.assortment)
+        self.shop = Shop.objects.create(name="TestShop",
+                                        address="TestAdress")
+        self.shop.producent.add(self.producent)
+        self.shop.magazine.add(self.magazine)
+        self.owner = Owner.objects.create(owner=self.user,
+                                          shop=self.shop,
+                                          has_ownership=True)
+
+    def test_create_owner_profile(self):
+        owner_profile = OwnerProfile.objects.create(owner=self.owner,
+                                                    phone_number="333-333-333",
+                                                    image=self.uploaded)
+        self.assertEqual(1, OwnerProfile.objects.count())
+        self.assertTrue(owner_profile.owner, self.owner)
+    
+    def test_invalid_create_owner_profile(self):
+        test_cases = [{
+            "owner": None,
+            "phone_number": "333-333-333",
+            "image": self.uploaded,
+        },
+            {
+            "owner": self.owner,
+            "phone_number": None,
+            "image": self.uploaded,
+        },
+            {
+            "owner": self.owner,
+            "phone_number": "333-333-333",
+            "image": None,
+        }]
+
+        for test_case in test_cases:
+            with transaction.atomic():
+                owner_profile = OwnerProfile.objects.create(**test_case)
+                self.assertTrue(0, OwnerProfile.objects.count())
+
+
+class TaskTest(TestCase): 
+
+    def setUp(self):
+        small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
+            b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
+            b'\x02\x4c\x01\x00\x3b'
+        )
+        self.uploaded = SimpleUploadedFile('small.gif',
+                                           small_gif, content_type='image/gif')
+
+        self.user = User.objects.create_user(
+            username="ExampleUser",
+            email="User@example.com",
+            first_name="User",
+            last_name="User-Surname",
+            password="ExamplePassword")
+        
+        self.user_employee = User.objects.create_user(username="ExampleEmployee",
+                                                      email="Example@example.com",
+                                                      first_name="Employee",
+                                                      last_name="Employee",
+                                                      password="SimpleEmployee")
+
+        self.producent = Producent.objects.create(logo=self.uploaded,
+                                                  name="TestProducent")
+        self.category = Category.objects.create(category_logo=self.uploaded,
+                                                name="TestCategory")
+        self.product = Product.objects.create(logo=self.uploaded,
+                                              name="Product",
+                                              description="Example",
+                                              category=self.category,
+                                              price=20)
+        self.assortment = Assortment.objects.create(product=self.product,
+                                                    quantity=20,
+                                                    category=self.category)
+        self.magazine = Magazine.objects.create(address="SimpleMagazine")
+        self.magazine.assortment.add(self.assortment)
+        self.shop = Shop.objects.create(name="TestShop",
+                                        address="TestAdress")
+        self.shop.producent.add(self.producent)
+        self.shop.magazine.add(self.magazine)
+        self.owner = Owner.objects.create(owner=self.user,
+                                          shop=self.shop,
+                                          has_ownership=True)
+        self.employee = Employee.objects.create(employee=self.user_employee,
+                                             shop=self.shop)
+    
+    def test_task_create(self): 
+        task = Task.objects.create(task_from=self.owner,
+                                   task_to=self.employee, 
+                                   status='assigned',
+                                   description='simple description for task',
+                                   execution_time=datetime.date(2020, 10, 15))
+        self.assertEqual(1, Task.objects.count()) 
+    
+    def test_task_create_null_values(self): 
+        test_cases = [{
+            "task_from": None, 
+            "task_to": self.employee, 
+            "status": "assigned",
+            "description": "simple description for task",
+            "execution_time": datetime.date(2020, 10, 150)
+        },
+        {
+            "task_from": self.owner, 
+            "task_to": None, 
+            "status": "assigned",
+            "description": "simple description for task",
+            "execution_time": datetime.date(2020, 10, 150)
+        },
+        {
+            "task_from": self.owner, 
+            "task_to": self.employee, 
+            "status": None,
+            "description": "simple description for task",
+            "execution_time": datetime.date(2020, 10, 150)
+        },
+        {
+            "task_from": self.owner, 
+            "task_to": self.employee, 
+            "status": "assigned",
+            "description": "simple description for task",
+            "execution_time": None
+        }]
+
+        for test_case in test_cases: 
+            with transaction.atomic(): 
+                task = Task.objects.create(**test_case)
+                self.assertEqual(0, Task.objects.count()) 

@@ -46,14 +46,7 @@ class ForumTest(TestCase):
         self.assertEqual(1, Forum.objects.count())
     
     def test_create_forum_null_values(self): 
-        test_cases = [{
-            "groups": None,
-            "shop": self.shop,
-            "title": "TestTitle",
-            "description": "TestDescription",
-            "threads": 0,
-            "posts": 0
-        },
+        test_cases = [
         {
             "groups": self.group,
             "shop": None,

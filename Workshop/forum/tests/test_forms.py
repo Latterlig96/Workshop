@@ -48,14 +48,7 @@ class CreateForumFormTest(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_invalid_forum_create(self): 
-        test_cases = [{
-            "groups": None,
-            "shop": self.shop,
-            "title": "TestTitle",
-            "description": "TestDescription",
-            "threads": 0,
-            "posts": 0
-        },
+        test_cases = [
         {
             "groups": self.group,
             "shop": None,
@@ -282,20 +275,3 @@ class CreateCommentFormTest(TestCase):
         }
         form = CommentsForm(data=data)
         self.assertTrue(form.is_valid())
-    
-    def test_invalid_comment_create(self):
-        test_cases = [{
-            "from_user": None,
-            "post": self.post,
-            "body": "TestBody"
-        },
-        {
-            "from_user": self.user,
-            "post": None,
-            "body": "TestBody"
-        }]
-
-        for test_case in test_cases: 
-            with transaction.atomic(): 
-                form = CommentsForm(data=test_case)
-                self.assertFalse(form.is_valid())

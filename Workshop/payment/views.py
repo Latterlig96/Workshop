@@ -1,21 +1,23 @@
 import braintree
 from django.shortcuts import render, redirect
+from django.conf import settings
 from order.models import OrderInformation, OrderItem
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
 from http import HTTPStatus
 
-
 def payment_process(request: WSGIRequest,
                     id: int
                     ) -> HttpResponse:
+    gateway = braintree.BraintreeGateway(settings.BRAINTREE_CONF)
     order_info = OrderInformation.objects.get(id=id)
-    order_item = OrderItem.objects.get(order_information=order_info)
+    order_items = OrderItem.objects.filter(order_information=order_info).all()
+    total_cost = sum(order_item.get_total_cost for order_item in order_items)
     if request.method == "POST":
         nonce = request.POST.get('payment_method_nonce',
                                  None)
-        result = braintree.Transaction.sale({
-            'amount': f"{order_item.get_total_cost()}",
+        result = gateway.transaction.sale({
+            'amount': f"{total_cost:.2f}",
             'payment_method_nonce': nonce,
             'options': {
                 'submit_for_settlement': True
@@ -28,11 +30,11 @@ def payment_process(request: WSGIRequest,
             return redirect('payment_done') 
         return redirect('payment_canceled')
     else: 
-        client_token = braintree.ClientToken.generate()
+        client_token = gateway.client_token.generate()
         return render(request,
                       'payment/process.html',
                       {'order': order_info,
-                       'item': order_item,
+                       'item': order_items,
                        'client_token': client_token},
                        status=HTTPStatus.OK)
 

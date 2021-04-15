@@ -10,6 +10,5 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderItem)
 class OrderAdmin(admin.ModelAdmin):
-    filter_horizontal = ('product',)
-    list_display = ('quantity', 'created_at',
+    list_display = ('product', 'quantity', 'created_at',
                     'order_information', 'shop')

@@ -94,12 +94,12 @@ BRAINTREE_MERCHANT_ID = 'XXX'
 BRAINTREE_PUBLIC_KEY = 'XXX'   
 BRAINTREE_PRIVATE_KEY = 'XXX' 
 
-Configuration.configure(
-    Environment.Sandbox,
-    BRAINTREE_MERCHANT_ID,
-    BRAINTREE_PUBLIC_KEY,
-    BRAINTREE_PRIVATE_KEY
-)
+BRAINTREE_CONF = Configuration(
+                                Environment.Sandbox,
+                                BRAINTREE_MERCHANT_ID,
+                                BRAINTREE_PUBLIC_KEY,
+                                BRAINTREE_PRIVATE_KEY
+                              ) 
 
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGIN_URL = 'customer_login'

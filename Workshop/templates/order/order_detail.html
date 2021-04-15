@@ -1,5 +1,36 @@
 {% extends "base.html" %}
-{% load static %}
-
 {% block content %}
+{% for order_item in order_items %}
+<div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <img src="{{ order_item.product.logo.url }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Product</h5>
+          <p class="card-text">Name: {{ order_item.product.name }}</p>
+          <p class="card-text">Quantity: {{ order_item.quantity }}</p>
+          <p class="card-text">Price: {{ order_item.product.price }}</p>
+          <p class="card-text">Total: {{ order_item.get_total_cost }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Order Specification</h5>
+          <p class="card-text">Name: {{ order.name }}</p>
+          <p class="card-text">Surname: {{ order.surname }}</p>
+          <p class="card-text">Email: {{ order.email }}</p>
+          <p class="card-text">Address: {{ order.address }}</p>
+          <p class="card-text">City: {{ order.city }}</p>
+          <p class="card-text">Zipcode: {{ order.zipcode }}</p>
+          <p class="card-text">Paid: {{ order.paid }}</p>
+          {% if order.paid %}
+          <a class="btn btn-primary" href="{% url 'order_resolve' order.id %}" data-token="{{csrf_token}}" role="button">Confirm order</a>
+          {% endif %} 
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
 {% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" id="headingOne">
+    <h2 class="mb-0">
+        Magazines
+    </h2>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">Magazine address</th>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Category</th>
+                <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for magazine in magazines %}
+                    {% for assortment in magazine.assortment.all %}
+                    <tr>
+                        <td>{{ magazine.address }}</td>
+                        <td>{{ assortment.product }}</td>
+                        <td>{{ assortment.quantity }}</td>
+                        <td>{{ assortment.category }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </table>    
+    </div>
+    </div>
+</div>
+{% endblock %}

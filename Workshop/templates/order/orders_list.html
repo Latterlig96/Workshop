@@ -34,9 +34,9 @@
                           </div>
                         </div>
                     </div>
-                    <a href="#"><button type="button" class="btn btn-info">Details</button></a>
+                    <a href="{% url 'order_detail' item.order_information.id %}"><button type="button" class="btn btn-info">Details</button></a>
                     <a href="{% url 'payment_link_send' item.order_information.id %}"><button type="button" class="btn btn-info">Resolve</button></a>
-                    <a href="#"><button type="button" class="btn btn-info">Check Magazine</button></a>
+                    <a href="{% url 'order_magazine_check' item.id %}"><button type="button" class="btn btn-info">Check Magazine</button></a>
                 </div>
         </div>
     </div>

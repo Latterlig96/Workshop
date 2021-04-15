@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Pay by credit card{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/payment.css' %}">
 <h1>Pay by credit card</h1>
-<form action="." id="payment" method="POST">
+<form action="{% url 'payment_process' order.id %}" id="payment" method="POST">
     <label for="card-number">Card Number</label>
     <div id="card-number" class="field"></div>
 
@@ -55,7 +56,7 @@
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
                 
-                hostedFieldsInstace.tokenize(function (tokenizeErr, payload) {
+                hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
                     if (tokenizeErr) {
                         console.error(tokenizeErr);
                         return;
@@ -68,3 +69,4 @@
         });
     });
 </script>
+{% endblock %}

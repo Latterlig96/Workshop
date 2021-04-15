@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from typing import Dict, List
+from itertools import product
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -175,7 +176,7 @@ def product_order(request: WSGIRequest,
     if request.method == "POST":
         order_form = OrderInformationForm(request.POST)
         product = Product.objects.get(name=product)
-        shop = Shop.objects.get(magazine__assortment__product=product)
+        shop = Shop.objects.filter(magazine__assortment__product=product).first()
         if order_form.is_valid():
             cd: Dict = order_form.cleaned_data
             order_info = OrderInformation.objects.create(name=cd['name'],
@@ -184,10 +185,10 @@ def product_order(request: WSGIRequest,
                                                          address=cd['address'],
                                                          city=cd['city'],
                                                          zipcode=cd['zipcode'])
-            order_item = OrderItem.objects.create(quantity=1,
+            order_item = OrderItem.objects.create(product=product,
+                                                  quantity=1,
                                                   order_information=order_info,
                                                   shop=shop)
-            order_item.product.add(product)
             return render(request,
                           'order/order_done.html',
                           {'user': request.user},
@@ -200,7 +201,6 @@ def product_order(request: WSGIRequest,
                       {'form': order_form,
                        'product': product},
                       status=HTTPStatus.OK)
-
 
 @login_required
 def product_order_from_checkout(request: WSGIRequest) -> HttpResponse:
@@ -225,11 +225,11 @@ def product_order_from_checkout(request: WSGIRequest) -> HttpResponse:
                                                          city=cd['city'],
                                                          zipcode=cd['zipcode'])
             for product, quantity in zip(products, quantities):
-                shop = Shop.objects.get(magazine__assortment__product=product)
-                order_item = OrderItem.objects.create(quantity=quantity,
-                                                    order_information=order_info,
-                                                    shop=shop)
-                order_item.product.add(product)
+                shop = Shop.objects.filter(magazine__assortment__product=product).first()
+                OrderItem.objects.create(product=product,
+                                         quantity=quantity,
+                                         order_information=order_info,
+                                         shop=shop)
             return render(request,
                         'order/order_done.html',
                         {'user': request.user},
@@ -257,10 +257,51 @@ def order_list(request: WSGIRequest) -> HttpResponse:
 def order_detail(request: WSGIRequest,
                  id: int) -> HttpResponse:
     order = OrderInformation.objects.get(pk=id)
+    order_items = OrderItem.objects.filter(order_information=order).all()
     return render(request,
                   'order/order_detail.html',
-                  {'order': order},
+                  {'order': order,
+                   'order_items': order_items},
                   status=HTTPStatus.OK)
+
+@login_required 
+def order_magazine_check(request: WSGIRequest,
+                         id: int) -> HttpResponse: 
+    employee = Employee.objects.get(employee=request.user)
+    shop = Shop.objects.get(id=employee.shop.id)
+    magazines = [magazine for magazine in shop.magazine.iterator()]
+    return render(request,
+                  'order/order_magazine_check.html',
+                  {'magazines': magazines},
+                  status=HTTPStatus.OK)
+
+@login_required 
+def order_resolve(request: WSGIRequest, 
+                  id: int) -> HttpResponse: 
+    employee = Employee.objects.get(employee=request.user)
+    shop = Shop.objects.get(id=employee.shop.id)
+    order = OrderInformation.objects.get(pk=id)
+    order_items = OrderItem.objects.filter(order_information=order).all()
+    magazines = [magazine for magazine in shop.magazine.iterator()]
+
+    for order_item, magazine in product(order_items, magazines): 
+        if magazine.assortment.filter(product=order_item.product).exists():
+            if order_item.quantity == 0: 
+                continue 
+            magazine_assortment = magazine.assortment.filter(product=order_item.product).first()
+            assortment_quantity = magazine_assortment.quantity   
+            if assortment_quantity > order_item.quantity:
+                assortment_quantity -= order_item.quantity
+                magazine_assortment.quantity = assortment_quantity 
+                order_item.quantity = 0 
+                order_item.save()
+                magazine_assortment.save() 
+
+    for order_item in order_items:
+        if order_item.quantity == 0: 
+            order_item.delete()     
+    messages.success(request, "Order has been sucessfully resolved")
+    return redirect('order_list')
 
 
 @login_required
@@ -625,7 +666,6 @@ def task_detail(request: WSGIRequest,
                      'form': task_form},
                     status=HTTPStatus.OK)
 
-
 @login_required
 @permission_required('shop.can_view_task')
 def task_list(request: WSGIRequest) -> HttpResponse:
@@ -640,7 +680,6 @@ def task_list(request: WSGIRequest) -> HttpResponse:
                   {'tasks': tasks},
                   status=HTTPStatus.OK)
 
-
 @login_required
 @permission_required('shop.can_view_employee_list')
 def employee_list(request: WSGIRequest,
@@ -651,7 +690,6 @@ def employee_list(request: WSGIRequest,
         employees = Employee.objects.filter(shop__id=shop.id).all()
     except Employee.DoesNotExist: 
         employees = None
-        
     return render(request,
                   'shop/owner/employee_list.html',
                   {'employees': employees},

@@ -1,0 +1,21 @@
+#Common 
+README.md 
+.gitignore 
+.git
+.vscode 
+
+#Virtualenv 
+.venv 
+.venv/
+ENV/ 
+
+#Byte-compiled / optimized / DLL files 
+
+__pycache__/ 
+*.py[cod]
+*$py.class 
+
+# Unit test / coverage reports 
+
+.coverage 
+.coverage.*

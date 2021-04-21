@@ -23,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'f0+cv1%j-wfwa^5a#uyxy7xav$z%dp%m8a7-)tuzd-_9@v+6aa'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -82,17 +82,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Workshop.wsgi.application'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = '<your_email>'
-EMAIL_HOST_PASSWORD = '<your_email_password>'
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = os.environ.get("EMAIL_HOST", default='smtp.gmail.com')
+EMAIL_PORT = os.environ.get("EMAIL_PORT", default=2137)
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", default=True)
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", default=None)
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", default=None)
 
 
-BRAINTREE_MERCHANT_ID = 'XXX'  
-BRAINTREE_PUBLIC_KEY = 'XXX'   
-BRAINTREE_PRIVATE_KEY = 'XXX' 
+BRAINTREE_MERCHANT_ID = os.environ.get("BRAINTREE_MERCHANT", default='XXX')  
+BRAINTREE_PUBLIC_KEY = os.environ.get("BRAINTREE_PUBLIC_KEY", default='XXX')   
+BRAINTREE_PRIVATE_KEY = os.environ.get("BRAINTREE_PRIVATE_KEY", default='XXX') 
 
 BRAINTREE_CONF = Configuration(
                                 Environment.Sandbox,
@@ -112,8 +112,12 @@ CART_SESSION_ID = 'cart'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.environ.get("SQL_ENGINE", default="django.db.backends.sqlite3"),
+        'NAME': os.environ.get("SQL_DATABASE", default=os.path.join(BASE_DIR / 'db.sqlite3')),
+        'USER': os.environ.get("SQL_USER", default="user"),
+        'PASSWORD': os.environ.get("PASSWORD", default="password"),
+        'HOST': os.environ.get("SQL_HOST", default="localhost"),
+        "PORT": os.environ.get("SQL_PORT", default="5432")
     }
 }
 
